@@ -7,6 +7,8 @@ services:
       - ${APP_PORT:-8083}:80
     depends_on:
       - php-fpm
+    volumes:
+      - ./:/var/www
 
   php-fpm:
     build:

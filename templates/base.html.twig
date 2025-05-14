@@ -1,0 +1,53 @@
+{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>{% block title %}Weather API App{% endblock %}</title>
+
+    {# Tailwind CDN, or replace with your compiled CSS #}
+    <script src="https://cdn.tailwindcss.com"></script>
+    {# FontAwesome #}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    {# favicon #}
+
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+
+</head>
+
+<body class="min-h-screen flex flex-col bg-gray-100">
+{# NAVIGATION HEADER #}
+<nav class="bg-blue-600 text-white shadow">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="{{ path('home') }}" class="text-2xl font-bold flex items-center">
+            <i class="fas fa-cloud-sun mr-2"></i>
+            Weather API
+        </a>
+        <ul class="flex space-x-4">
+            <li>
+                <a
+                        href="{{ path('home') }}"
+                        class="hover:text-gray-200 px-3 py-2 rounded"
+                >
+                    Home
+                </a>
+            </li>
+            {# Додайте інші пункти меню за потреби #}
+        </ul>
+    </div>
+</nav>
+
+{# MAIN CONTENT AREA #}
+<main class="flex-grow container mx-auto px-4 py-8">
+    {% block body %}{% endblock %}
+</main>
+
+{# FOOTER #}
+<footer class="bg-gray-200">
+    <div class="container mx-auto px-4 py-4 text-center text-sm text-gray-600">
+        &copy; {{ "now"|date("Y") }} Weather API App
+    </div>
+</footer>
+</body>
+</html>

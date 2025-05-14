@@ -26,7 +26,7 @@ final class SubscribeCommand
     public function __construct(
         ?string $email,
         ?string $city,
-        ?string $frequency
+        ?string $frequency,
     ) {
         $this->email = $email;
         $this->city = $city;

@@ -10,7 +10,6 @@ use App\Services\SubscriptionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -34,5 +33,11 @@ class SubscribeController extends AbstractController
         $this->subscriptionManager->subscribe($command);
 
         return $this->json([]);
+    }
+
+    #[Route(path: '/confirm/{token}', name: 'subscription_confirm', methods: ['GET'])]
+    public function confirm(string $token): JsonResponse
+    {
+        return $this->json(['token' => $token]);
     }
 }

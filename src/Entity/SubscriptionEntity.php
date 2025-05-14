@@ -32,7 +32,7 @@ class SubscriptionEntity
     public function __construct(
         Email $email,
         string $city,
-        Frequency $frequency
+        Frequency $frequency,
     ) {
         $this->email = $email;
         $this->city = $city;

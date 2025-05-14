@@ -22,6 +22,9 @@ docker-pull:
 bash:
 	docker compose exec php-fpm bash
 
+queue-run:
+	docker compose exec php-fpm php bin/console messenger:consume async
+
 validate:
 	docker compose run --rm php-fpm composer run validate
 

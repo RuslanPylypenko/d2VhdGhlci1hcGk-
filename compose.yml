@@ -29,5 +29,13 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  mailer:
+    platform: linux/amd64
+    image: mailhog/mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8082:8025"
+
 volumes:
   pgdata:

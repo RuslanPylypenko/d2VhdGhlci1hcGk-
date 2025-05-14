@@ -60,7 +60,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "validate": [
+            "php-cs-fixer  fix --dry-run --diff",
+            "phpstan analyse -c phpstan.dist.neon"
+        ],
+        "fix-style": "php-cs-fixer fix"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -70,5 +75,9 @@
             "allow-contrib": false,
             "require": "7.2.*"
         }
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "phpstan/phpstan": "^2.1"
     }
 }

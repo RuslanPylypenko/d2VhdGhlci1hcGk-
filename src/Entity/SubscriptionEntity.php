@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\Frequency;
+use App\Repository\SubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 #[ORM\Table(name: 'subscription')]
 class SubscriptionEntity
 {

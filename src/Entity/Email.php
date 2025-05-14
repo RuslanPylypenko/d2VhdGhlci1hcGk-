@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Embeddable]
 class Email
 {
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(name: 'email', type: 'string', length: 255)]
     private string $value;
 
     public function __construct(string $email)
@@ -18,6 +18,11 @@ class Email
             throw new \InvalidArgumentException(sprintf('Invalid email address "%s".', $email));
         }
         $this->value = $email;
+    }
+
+    public static function fromString(string $email): self
+    {
+        return new self($email);
     }
 
     public function getValue(): string

@@ -29,21 +29,30 @@ class SubscriptionEntity
     #[ORM\Embedded(class: ConfirmToken::class, columnPrefix: 'confirm_token_')]
     private ?ConfirmToken $confirmToken;
 
+    #[ORM\Embedded(class: UnsubscribeToken::class, columnPrefix: 'unsubscribe_token_')]
+    private ?UnsubscribeToken $unsubscribeToken;
+
     #[ORM\Column]
-    private bool $confirmed = false;
+    private bool $confirmed;
+
+    #[ORM\Column]
+    private bool $subscribed;
 
     public function __construct(
         Email $email,
         string $city,
         Frequency $frequency,
         ConfirmToken $confirmToken,
+        UnsubscribeToken $unsubscribeToken,
     ) {
         $this->email = $email;
         $this->city = $city;
         $this->frequency = $frequency;
 
         $this->confirmed = false;
+        $this->subscribed = false;
         $this->confirmToken = $confirmToken;
+        $this->unsubscribeToken = $unsubscribeToken;
     }
 
     public function getId(): ?int
@@ -88,11 +97,34 @@ class SubscriptionEntity
         $this->confirmToken->validate($token, $time);
 
         $this->confirmed = true;
+        $this->subscribed = true;
         $this->confirmToken = null;
+    }
+
+    public function isUnsubscribed(): bool
+    {
+        return $this->subscribed;
+    }
+
+    public function unsubscribe(): void
+    {
+        $this->unsubscribeToken = null;
+        $this->subscribed = false;
+    }
+
+    public function renew(): void
+    {
+        $this->unsubscribeToken = UnsubscribeToken::next();
+        $this->subscribed = true;
     }
 
     public function getConfirmToken(): ?ConfirmToken
     {
         return $this->confirmToken;
+    }
+
+    public function getUnsubscribeToken(): ?UnsubscribeToken
+    {
+        return $this->unsubscribeToken;
     }
 }

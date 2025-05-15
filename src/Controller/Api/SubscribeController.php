@@ -42,4 +42,12 @@ class SubscribeController extends AbstractController
 
         return $this->json(['message' => 'Subscription confirmed successfully']);
     }
+
+    #[Route(path: '/unsubscribe/{token}', name: 'unsubscribe', methods: ['GET'])]
+    public function unsubscribe(string $token): JsonResponse
+    {
+        $this->subscriptionManager->unsubscribe($token);
+
+        return $this->json(['message' => 'Unsubscribed successfully']);
+    }
 }

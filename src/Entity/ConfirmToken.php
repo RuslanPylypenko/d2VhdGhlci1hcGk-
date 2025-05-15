@@ -13,7 +13,7 @@ class ConfirmToken
 {
     private const int TOKEN_LENGTH = 22;
 
-    #[Mapping\Column(length: self::TOKEN_LENGTH, nullable: true)]
+    #[Mapping\Column(length: self::TOKEN_LENGTH, unique: true, nullable: true)]
     private ?string $token;
 
     #[Mapping\Column(nullable: true)]
@@ -26,6 +26,11 @@ class ConfirmToken
 
         $this->token = $token;
         $this->expiredAt = $expiredAt;
+    }
+
+    public static function fromString(string $token, ?\DateTimeImmutable $expiredAt = null): self
+    {
+        return new self($token, $expiredAt ?? new \DateTimeImmutable());
     }
 
     public function validate(string $token, \DateTimeImmutable $date): void

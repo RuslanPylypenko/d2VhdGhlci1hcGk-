@@ -37,6 +37,15 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByUnsubscribeToken(string $token): ?SubscriptionEntity
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.unsubscribeToken.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(SubscriptionEntity $subscription, bool $flush = true): void
     {
         $em = $this->getEntityManager();

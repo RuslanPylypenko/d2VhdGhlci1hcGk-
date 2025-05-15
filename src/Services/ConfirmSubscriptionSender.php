@@ -37,7 +37,7 @@ class ConfirmSubscriptionSender
             return;
         }
 
-        $url = $this->router->generate(
+        $confirmUrl = $this->router->generate(
             'subscription_confirm',
             ['token' => $subscription->getConfirmToken()->getToken()],
             UrlGeneratorInterface::ABSOLUTE_URL
@@ -49,7 +49,7 @@ class ConfirmSubscriptionSender
             ->htmlTemplate('emails/welcome.html.twig')
             ->context([
                 'recipientEmail' => $subscription->getEmail()->getValue(),
-                'confirmationUrl' => $url,
+                'confirmationUrl' => $confirmUrl,
             ]);
 
         $this->mailer->send($mail);

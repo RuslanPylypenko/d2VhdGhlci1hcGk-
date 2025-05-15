@@ -8,14 +8,13 @@ use App\Commands\SubscribeCommand;
 use App\Entity\ConfirmToken;
 use App\Entity\Email;
 use App\Entity\SubscriptionEntity;
+use App\Entity\UnsubscribeToken;
 use App\Enum\Frequency;
 use App\Events\SubscriptionCreated;
 use App\Exceptions\EmailAlreadySubscribedException;
 use App\Exceptions\TokenNotFountException;
 use App\Repository\SubscriptionRepository;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Uid\Uuid;
-use Webmozart\Assert\Assert;
 
 class SubscriptionManager
 {
@@ -31,7 +30,12 @@ class SubscriptionManager
         $email = Email::fromString($command->email);
         $subscription = $this->subscriptionRepository->findByEmail($email);
 
-        if (null !== $subscription) {
+        if ($subscription) {
+            if ($subscription->isUnsubscribed()) {
+                $subscription->renew();
+                $this->subscriptionRepository->save($subscription);
+                return;
+            }
             throw new EmailAlreadySubscribedException($email);
         }
 
@@ -39,7 +43,8 @@ class SubscriptionManager
             $email,
             $command->city,
             Frequency::from($command->frequency),
-            $this->tokenGenerator->generateConfirmToken()
+            $this->tokenGenerator->generateConfirmToken(),
+            UnsubscribeToken::next()
         );
 
         $this->subscriptionRepository->save($newSubscription);
@@ -49,16 +54,30 @@ class SubscriptionManager
 
     public function confirm(string $token): void
     {
-        $token = new ConfirmToken($token, new \DateTimeImmutable());
+        $token = ConfirmToken::fromString($token);
 
-        dd($token);
         $subscription = $this->subscriptionRepository->findByConfirmToken($token->getToken());
 
         if (null === $subscription) {
             throw new TokenNotFountException();
         }
 
-        $subscription->confirm($token);
+        $subscription->confirm($token->getToken());
+
+        $this->subscriptionRepository->save($subscription);
+    }
+
+    public function unsubscribe(string $token): void
+    {
+        $token = UnsubscribeToken::fromString($token);
+
+        $subscription = $this->subscriptionRepository->findByUnsubscribeToken($token->getToken());
+
+        if (null === $subscription) {
+            throw new TokenNotFountException();
+        }
+
+        $subscription->unsubscribe();
 
         $this->subscriptionRepository->save($subscription);
     }

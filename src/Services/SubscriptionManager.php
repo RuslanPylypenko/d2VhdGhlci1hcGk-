@@ -34,6 +34,7 @@ class SubscriptionManager
             if ($subscription->isUnsubscribed()) {
                 $subscription->renew();
                 $this->subscriptionRepository->save($subscription);
+
                 return;
             }
             throw new EmailAlreadySubscribedException($email);

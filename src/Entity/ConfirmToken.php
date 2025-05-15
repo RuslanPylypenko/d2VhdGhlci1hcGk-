@@ -14,7 +14,7 @@ class ConfirmToken
     private const int TOKEN_LENGTH = 22;
 
     #[Mapping\Column(length: self::TOKEN_LENGTH, unique: true, nullable: true)]
-    private ?string $token;
+    private ?string $token = null;
 
     #[Mapping\Column(nullable: true)]
     private ?\DateTimeImmutable $expiredAt = null;
@@ -35,7 +35,7 @@ class ConfirmToken
 
     public function validate(string $token, \DateTimeImmutable $date): void
     {
-        Assert::uuid(Uuid::fromBase58($token), 'Invalid token');
+        Assert::uuid(Uuid::fromBase58($token)->toString(), 'Invalid token');
 
         if (!$this->isEqualTo($token)) {
             throw new \DomainException('Not equal to token');

@@ -6,6 +6,7 @@
 parameters:
     app_url: '%env(APP_URL)%'
     app.confirm_token_ttl: 'P1D'
+    weather_api_token: '%env(resolve:WEATHER_API_TOKEN)%'
 
 services:
     _defaults:
@@ -27,3 +28,7 @@ services:
     App\Services\TokenGenerator:
         arguments:
             $tokenTTL: '@app.confirm_token_ttl_interval'
+
+    App\Services\WeatherService:
+        arguments:
+            $apiToken: '%weather_api_token%'

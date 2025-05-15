@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Commands;
+namespace App\DTO;
 
 use App\Enum\Frequency;
 use Symfony\Component\Validator\Constraints as Assert;

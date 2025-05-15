@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Commands\SubscribeCommand;
+use App\DTO\SubscribeCommand;
 use App\Exceptions\ValidationException;
 use App\Services\SubscriptionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

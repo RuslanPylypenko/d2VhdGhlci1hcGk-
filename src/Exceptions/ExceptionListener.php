@@ -8,6 +8,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
@@ -36,6 +37,13 @@ class ExceptionListener implements EventSubscriberInterface
             $response = new JsonResponse([
                 'errors' => $e->getMessage(),
             ], $e->getCode());
+            $event->setResponse($response);
+        }
+
+        if ($e instanceof NotFoundHttpException) {
+            $response = new JsonResponse([
+                'errors' => $e->getMessage(),
+            ], 404);
             $event->setResponse($response);
         }
 

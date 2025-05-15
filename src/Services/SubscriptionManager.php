@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Commands\SubscribeCommand;
+use App\DTO\SubscribeCommand;
 use App\Entity\ConfirmToken;
 use App\Entity\Email;
 use App\Entity\SubscriptionEntity;

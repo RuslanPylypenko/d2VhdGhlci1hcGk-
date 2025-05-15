@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 #[ORM\Table(name: 'subscription')]
+#[ORM\Index(name: 'city', columns: ['city'])]
 class SubscriptionEntity
 {
     #[ORM\Id]

@@ -14,29 +14,26 @@ class ConfirmToken
     private const int TOKEN_LENGTH = 22;
 
     #[Mapping\Column(length: self::TOKEN_LENGTH, nullable: true)]
-    private ?string $token = null;
+    private ?string $token;
 
     #[Mapping\Column(nullable: true)]
     private ?\DateTimeImmutable $expiredAt = null;
 
     public function __construct(string $token, \DateTimeImmutable $expiredAt)
     {
-        Assert::notEmpty($token);
-        Assert::length($token, self::TOKEN_LENGTH);
+        $pattern = sprintf('/^[1-9A-HJ-NP-Za-km-z]{%d}$/', self::TOKEN_LENGTH);
+        Assert::regex($token, $pattern, 'Invalid token');
 
         $this->token = $token;
         $this->expiredAt = $expiredAt;
     }
 
-    public static function next(\DateTimeImmutable $expiredAt): self
-    {
-        return new self(Uuid::v4()->toBase58(), $expiredAt);
-    }
-
     public function validate(string $token, \DateTimeImmutable $date): void
     {
+        Assert::uuid(Uuid::fromBase58($token), 'Invalid token');
+
         if (!$this->isEqualTo($token)) {
-            throw new \DomainException('Confirm token is invalid.');
+            throw new \DomainException('Not equal to token');
         }
         if ($this->isExpiredTo($date)) {
             throw new \DomainException('Confirm token is expired.');

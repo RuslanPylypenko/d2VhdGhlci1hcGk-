@@ -32,12 +32,14 @@ class SubscribeController extends AbstractController
         }
         $this->subscriptionManager->subscribe($command);
 
-        return $this->json([]);
+        return $this->json(['message' => 'Subscription successful. Confirmation email sent.']);
     }
 
     #[Route(path: '/confirm/{token}', name: 'subscription_confirm', methods: ['GET'])]
     public function confirm(string $token): JsonResponse
     {
-        return $this->json(['token' => $token]);
+        $this->subscriptionManager->confirm($token);
+
+        return $this->json(['message' => 'Subscription confirmed successfully']);
     }
 }

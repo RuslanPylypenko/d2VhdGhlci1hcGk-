@@ -38,6 +38,13 @@ class ExceptionListener implements EventSubscriberInterface
             ], $e->getCode());
             $event->setResponse($response);
         }
+
+        if ($e instanceof \InvalidArgumentException) {
+            $response = new JsonResponse([
+                'errors' =>  $e->getMessage(),
+            ], 400);
+            $event->setResponse($response);
+        }
     }
 
     public static function getSubscribedEvents(): array

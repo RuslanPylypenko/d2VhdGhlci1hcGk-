@@ -28,6 +28,15 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByConfirmToken(string $token): ?SubscriptionEntity
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.confirmToken.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(SubscriptionEntity $subscription, bool $flush = true): void
     {
         $em = $this->getEntityManager();

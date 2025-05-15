@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Commands\SubscribeCommand;
+use App\Entity\ConfirmToken;
 use App\Entity\Email;
 use App\Entity\SubscriptionEntity;
 use App\Enum\Frequency;
 use App\Events\SubscriptionCreated;
 use App\Exceptions\EmailAlreadySubscribedException;
+use App\Exceptions\TokenNotFountException;
 use App\Repository\SubscriptionRepository;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Uid\Uuid;
+use Webmozart\Assert\Assert;
 
 class SubscriptionManager
 {
@@ -41,5 +45,21 @@ class SubscriptionManager
         $this->subscriptionRepository->save($newSubscription);
 
         $this->messageBus->dispatch(new SubscriptionCreated($newSubscription->getEmail()));
+    }
+
+    public function confirm(string $token): void
+    {
+        $token = new ConfirmToken($token, new \DateTimeImmutable());
+
+        dd($token);
+        $subscription = $this->subscriptionRepository->findByConfirmToken($token->getToken());
+
+        if (null === $subscription) {
+            throw new TokenNotFountException();
+        }
+
+        $subscription->confirm($token);
+
+        $this->subscriptionRepository->save($subscription);
     }
 }

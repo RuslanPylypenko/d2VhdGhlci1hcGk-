@@ -49,4 +49,32 @@ class WeatherService
             throw new WeatherApiException('City not found');
         }
     }
+
+    public function getCity(string $city): string
+    {
+        try {
+            $response = $this->httpClient->request(
+                method: 'GET',
+                url: sprintf('%s/search.json', $this->baseUrl),
+                options: [
+                    'query' => ['q' => $city, 'key' => $this->apiToken],
+                ]
+            );
+
+            $locations = $response->toArray();
+
+            if (empty($locations)) {
+                throw new WeatherApiException('City not found');
+            }
+
+            return $locations[0]['name'];
+        } catch (HttpExceptionInterface $e) {
+            $this->logger->error('Weather API request failed', [
+                'city' => $city,
+                'exception' => $e,
+            ]);
+
+            throw new WeatherApiException('Api Request failed');
+        }
+    }
 }

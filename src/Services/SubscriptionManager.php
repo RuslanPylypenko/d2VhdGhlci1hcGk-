@@ -19,6 +19,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 class SubscriptionManager
 {
     public function __construct(
+        private WeatherService $weatherService,
         private SubscriptionRepository $subscriptionRepository,
         private MessageBusInterface $messageBus,
         private TokenGenerator $tokenGenerator,
@@ -27,6 +28,7 @@ class SubscriptionManager
 
     public function subscribe(SubscribeCommand $command): void
     {
+        $city = $this->weatherService->getCity($command->city);
         $email = Email::fromString($command->email);
         $subscription = $this->subscriptionRepository->findByEmail($email);
 
@@ -42,7 +44,7 @@ class SubscriptionManager
 
         $newSubscription = new SubscriptionEntity(
             $email,
-            $command->city,
+            $city,
             Frequency::from($command->frequency),
             $this->tokenGenerator->generateConfirmToken(),
             UnsubscribeToken::next()

@@ -26,18 +26,24 @@ class SubscriptionEntity
     #[ORM\Column(type: 'string', length: 10, enumType: Frequency::class)]
     private Frequency $frequency;
 
-    #[ORM\Column()]
+    #[ORM\Embedded(class: ConfirmToken::class, columnPrefix: 'confirm_token_')]
+    private ?ConfirmToken $confirmToken;
+
+    #[ORM\Column]
     private bool $confirmed = false;
 
     public function __construct(
         Email $email,
         string $city,
         Frequency $frequency,
+        ConfirmToken $confirmToken,
     ) {
         $this->email = $email;
         $this->city = $city;
         $this->frequency = $frequency;
+
         $this->confirmed = false;
+        $this->confirmToken = $confirmToken;
     }
 
     public function getId(): ?int
@@ -75,8 +81,18 @@ class SubscriptionEntity
         return $this->confirmed;
     }
 
-    public function confirm(): void
+    public function confirm(string $token, ?\DateTimeImmutable $time = null): void
     {
+        $time = $time ?? new \DateTimeImmutable();
+
+        $this->confirmToken->validate($token, $time);
+
         $this->confirmed = true;
+        $this->confirmToken = null;
+    }
+
+    public function getConfirmToken(): ?ConfirmToken
+    {
+        return $this->confirmToken;
     }
 }

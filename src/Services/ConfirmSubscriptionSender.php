@@ -29,9 +29,17 @@ class ConfirmSubscriptionSender
     {
         $subscription = $this->subscriptionRepository->findByEmail($event->getEmail());
 
+        if (!$subscription) {
+            return;
+        }
+
+        if (!$subscription->getConfirmToken()) {
+            return;
+        }
+
         $url = $this->router->generate(
             'subscription_confirm',
-            ['token' => 'token'],
+            ['token' => $subscription->getConfirmToken()->getToken()],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
@@ -40,8 +48,8 @@ class ConfirmSubscriptionSender
             ->subject('Please confirm your Weather API subscription')
             ->htmlTemplate('emails/welcome.html.twig')
             ->context([
-                'recipientEmail'   => $subscription->getEmail()->getValue(),
-                'confirmationUrl'  => $url,
+                'recipientEmail' => $subscription->getEmail()->getValue(),
+                'confirmationUrl' => $url,
             ]);
 
         $this->mailer->send($mail);

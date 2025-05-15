@@ -33,6 +33,9 @@ final class SubscribeCommand
         $this->frequency = $frequency;
     }
 
+    /**
+     * @param array<string> $payload
+     */
     public static function fromArray(array $payload): self
     {
         return new self(

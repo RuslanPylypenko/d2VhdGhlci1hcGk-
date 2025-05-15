@@ -17,7 +17,8 @@ class SubscriptionManager
 {
     public function __construct(
         private SubscriptionRepository $subscriptionRepository,
-        private MessageBusInterface $messageBus
+        private MessageBusInterface $messageBus,
+        private TokenGenerator $tokenGenerator,
     ) {
     }
 
@@ -34,6 +35,7 @@ class SubscriptionManager
             $email,
             $command->city,
             Frequency::from($command->frequency),
+            $this->tokenGenerator->generateConfirmToken()
         );
 
         $this->subscriptionRepository->save($newSubscription);

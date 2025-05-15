@@ -24,7 +24,6 @@ class ExceptionListener implements EventSubscriberInterface
                 $field = $violation->getPropertyPath();
                 $grouped[$field][] = $violation->getMessage();
             }
-
             $response = new JsonResponse(
                 ['errors' => $grouped],
                 Response::HTTP_BAD_REQUEST
@@ -35,21 +34,21 @@ class ExceptionListener implements EventSubscriberInterface
 
         if ($e instanceof \DomainException) {
             $response = new JsonResponse([
-                'errors' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], $e->getCode());
             $event->setResponse($response);
         }
 
         if ($e instanceof NotFoundHttpException) {
             $response = new JsonResponse([
-                'errors' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 404);
             $event->setResponse($response);
         }
 
         if ($e instanceof \InvalidArgumentException) {
             $response = new JsonResponse([
-                'errors' => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 400);
             $event->setResponse($response);
         }

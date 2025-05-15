@@ -1,0 +1,21 @@
+{# templates/emails/weather.html.twig #}
+
+<h1 style="color: #1e40af;">Your Weather Update</h1>
+
+<p>Hello,</p>
+
+<h2>Current Conditions</h2>
+<ul>
+    <li><strong>Temperature:</strong> {{ weather.temperature }}&deg;C</li>
+    <li><strong>Humidity:</strong> {{ weather.humidity }}&#37;</li>
+    <li><strong>Description:</strong> {{ weather.description }}</li>
+</ul>
+
+<hr style="border:none; border-top:1px solid #e5e7eb; margin: 30px 0;" />
+
+<p style="font-size:0.9em; color:#6b7280;">
+    If you’d like to stop receiving these updates, you can
+    <a href="{{ unsubscribeUrl }}" style="color:#1e40af; text-decoration:none;">unsubscribe here</a>.
+</p>
+
+<p>Cheers,<br/><strong>The Weather API Team</strong></p>

@@ -46,6 +46,39 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @return array<string>
+     */
+    public function getUniqueCities(): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->select('DISTINCT s.city AS city')
+            ->andWhere('s.confirmed = :confirmed')
+            ->andWhere('s.subscribed = :subscribed')
+            ->setParameter('confirmed', true)
+            ->setParameter('subscribed', true)
+            ->orderBy('s.city', 'ASC');
+
+        $rows = $qb->getQuery()->getScalarResult();
+        return array_column($rows, 'city');
+    }
+
+    /**
+     * @return SubscriptionEntity[]
+     */
+    public function getActiveSubscribersForCity(string $city): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.city = :city')
+            ->andWhere('s.confirmed = :confirmed')
+            ->andWhere('s.subscribed = :subscribed')
+            ->setParameter('city', $city)
+            ->setParameter('confirmed', true)
+            ->setParameter('subscribed', true)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(SubscriptionEntity $subscription, bool $flush = true): void
     {
         $em = $this->getEntityManager();

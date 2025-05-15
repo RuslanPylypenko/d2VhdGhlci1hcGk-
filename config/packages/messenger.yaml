@@ -8,6 +8,7 @@ framework:
 
         routing:
              'App\Events\SubscriptionCreated': async
+             'App\Events\WeatherUpdate': async
 
 # when@test:
 #    framework:

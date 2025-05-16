@@ -45,8 +45,11 @@ class WeatherService
                 'city' => $city,
                 'exception' => $e,
             ]);
+            if ($e->getCode() === 400) {
+                throw new WeatherApiException('City not found');
+            }
 
-            throw new WeatherApiException('City not found');
+            throw new WeatherApiException('Api request failed');
         }
     }
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\SubscribeCommand;
-use App\Exceptions\ValidationException;
 use App\Services\SubscriptionManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,7 +27,7 @@ class SubscribeController extends AbstractController
 
         $errors = $this->validator->validate($command);
         if (count($errors) > 0) {
-            throw ValidationException::create($errors);
+            throw new \InvalidArgumentException;
         }
         $this->subscriptionManager->subscribe($command);
 

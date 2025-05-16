@@ -29,10 +29,6 @@ class ConfirmSubscriptionSender
     {
         $subscription = $this->subscriptionRepository->findByEmail($event->getEmail());
 
-        if (!$subscription) {
-            return;
-        }
-
         if (!$subscription->getConfirmToken()) {
             return;
         }

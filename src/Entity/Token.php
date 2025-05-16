@@ -9,7 +9,7 @@ use Symfony\Component\Uid\Uuid;
 use Webmozart\Assert\Assert;
 
 #[Mapping\Embeddable]
-class UnsubscribeToken
+class Token
 {
     private const int TOKEN_LENGTH = 22;
 
@@ -37,5 +37,10 @@ class UnsubscribeToken
     public function getToken(): string
     {
         return $this->token;
+    }
+
+    public function isEqual(Token $token): bool
+    {
+        return $this->token === $token->token;
     }
 }

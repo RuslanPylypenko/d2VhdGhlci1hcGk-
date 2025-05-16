@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Email;
 use App\Entity\SubscriptionEntity;
+use App\Entity\Token;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,11 +29,11 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findByConfirmToken(string $token): ?SubscriptionEntity
+    public function findByConfirmToken(Token $token): ?SubscriptionEntity
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.confirmToken.token = :token')
-            ->setParameter('token', $token)
+            ->setParameter('token', $token->getToken())
             ->getQuery()
             ->getOneOrNullResult();
     }

@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Enum\Frequency;
 use App\Repository\SubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Webmozart\Assert\Assert;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 #[ORM\Table(name: 'subscription')]
@@ -27,11 +28,11 @@ class SubscriptionEntity
     #[ORM\Column(type: 'string', length: 10, enumType: Frequency::class)]
     private Frequency $frequency;
 
-    #[ORM\Embedded(class: ConfirmToken::class, columnPrefix: 'confirm_token_')]
-    private ?ConfirmToken $confirmToken;
+    #[ORM\Embedded(class: Token::class, columnPrefix: 'confirm_')]
+    private ?Token $confirmToken;
 
-    #[ORM\Embedded(class: UnsubscribeToken::class, columnPrefix: 'unsubscribe_token_')]
-    private ?UnsubscribeToken $unsubscribeToken;
+    #[ORM\Embedded(class: Token::class, columnPrefix: 'unsubscribe_')]
+    private ?Token $unsubscribeToken;
 
     #[ORM\Column]
     private bool $confirmed;
@@ -43,8 +44,8 @@ class SubscriptionEntity
         Email $email,
         string $city,
         Frequency $frequency,
-        ConfirmToken $confirmToken,
-        UnsubscribeToken $unsubscribeToken,
+        Token $confirmToken,
+        Token $unsubscribeToken,
     ) {
         $this->email = $email;
         $this->city = $city;
@@ -91,20 +92,13 @@ class SubscriptionEntity
         return $this->confirmed;
     }
 
-    public function confirm(string $token, ?\DateTimeImmutable $time = null): void
+    public function confirm(Token $token): void
     {
-        $time = $time ?? new \DateTimeImmutable();
-
-        $this->confirmToken->validate($token, $time);
+        Assert::true($this->confirmToken->isEqual($token), 'Invalid token');
 
         $this->confirmed = true;
         $this->subscribed = true;
         $this->confirmToken = null;
-    }
-
-    public function isUnsubscribed(): bool
-    {
-        return $this->subscribed;
     }
 
     public function unsubscribe(): void
@@ -113,18 +107,12 @@ class SubscriptionEntity
         $this->subscribed = false;
     }
 
-    public function renew(): void
-    {
-        $this->unsubscribeToken = UnsubscribeToken::next();
-        $this->subscribed = true;
-    }
-
-    public function getConfirmToken(): ?ConfirmToken
+    public function getConfirmToken(): ?Token
     {
         return $this->confirmToken;
     }
 
-    public function getUnsubscribeToken(): ?UnsubscribeToken
+    public function getUnsubscribeToken(): ?Token
     {
         return $this->unsubscribeToken;
     }

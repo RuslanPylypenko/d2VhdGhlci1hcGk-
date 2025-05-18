@@ -27,7 +27,7 @@ class SubscribeController extends AbstractController
 
         $errors = $this->validator->validate($command);
         if (count($errors) > 0) {
-            throw new \InvalidArgumentException;
+            throw new \InvalidArgumentException();
         }
         $this->subscriptionManager->subscribe($command);
 

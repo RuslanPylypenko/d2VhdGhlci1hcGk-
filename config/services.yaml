@@ -19,6 +19,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Services\WeatherService:
+    App\Services\Weather\WeatherService:
         arguments:
             $apiToken: '%weather_api_token%'

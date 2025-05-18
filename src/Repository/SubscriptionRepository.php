@@ -62,6 +62,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->orderBy('s.city', 'ASC');
 
         $rows = $qb->getQuery()->getScalarResult();
+
         return array_column($rows, 'city');
     }
 

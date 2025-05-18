@@ -13,6 +13,7 @@ use App\Events\SubscriptionCreated;
 use App\Exceptions\EmailAlreadySubscribedException;
 use App\Exceptions\TokenNotFountException;
 use App\Repository\SubscriptionRepository;
+use App\Services\Weather\WeatherService;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class SubscriptionManager

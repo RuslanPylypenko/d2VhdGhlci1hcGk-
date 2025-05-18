@@ -30,6 +30,17 @@ services:
     environment:
       CONTAINER_ROLE: queue
 
+  php-fpm-schedule:
+    build:
+      context: .
+      dockerfile: docker/php-fpm/Dockerfile
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./:/var/www
+    environment:
+      CONTAINER_ROLE: scheduler
+
   postgres:
     image: postgres:16-alpine
     restart: always

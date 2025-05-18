@@ -31,6 +31,9 @@ COPY --chown=www-data:www-data . /var/www
 COPY ./docker/php-fpm/entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint
 
+# Copy php.ini
+COPY ./docker/php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
+
 USER www-data
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

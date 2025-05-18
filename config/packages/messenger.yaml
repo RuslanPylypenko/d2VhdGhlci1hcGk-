@@ -7,8 +7,9 @@ framework:
              async: '%env(MESSENGER_TRANSPORT_DSN)%'
 
         routing:
-             'App\Events\SubscriptionCreated': async
-             'App\Events\WeatherUpdate': async
+             App\Events\SubscriptionCreated: async
+             App\Events\WeatherUpdate: async
+             App\Scheduler\Message\WeatherUpdateMessage: async
 
 # when@test:
 #    framework:

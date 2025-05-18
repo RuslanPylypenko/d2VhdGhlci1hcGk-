@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Weather;
 
 use App\Entity\Weather;
 use App\Exceptions\WeatherApiException;
@@ -45,7 +45,7 @@ class WeatherService
                 'city' => $city,
                 'exception' => $e,
             ]);
-            if ($e->getCode() === 400) {
+            if (400 === $e->getCode()) {
                 throw new WeatherApiException('City not found');
             }
 

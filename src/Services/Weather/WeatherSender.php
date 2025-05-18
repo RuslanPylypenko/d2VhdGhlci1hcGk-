@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Weather;
 
-use App\Events\SubscriptionCreated;
 use App\Events\WeatherUpdate;
-use App\Repository\SubscriptionRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -35,7 +33,7 @@ class WeatherSender
 
         $mail = (new TemplatedEmail())
             ->to(new Address($event->getEmail()->getValue()))
-            ->subject('Weather update for ' . $event->getCity())
+            ->subject('Weather update for '.$event->getCity())
             ->htmlTemplate('emails/weather.html.twig')
             ->context([
                 'unsubscribeUrl' => $unsubscribeUrl,

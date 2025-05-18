@@ -22,6 +22,15 @@ elif [ "$role" = "queue" ]; then
     done
 
     php bin/console messenger:consume async --no-interaction --memory-limit=512M
+
+elif [ "$role" = "scheduler" ]; then
+    echo "Scheduler role"
+
+   until php bin/console doctrine:query:sql "SELECT 1" > /dev/null 2>&1; do
+      sleep 1
+    done
+
+    php bin/console messenger:consume scheduler_weather_update async -vv
 else
     echo "Could not match the container role \"$role\""
     exit 1

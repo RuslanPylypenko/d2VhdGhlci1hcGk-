@@ -14,8 +14,21 @@ services:
     build:
       context: .
       dockerfile: docker/php-fpm/Dockerfile
+    depends_on:
+      - postgres
     volumes:
       - ./:/var/www
+
+  php-fpm-queue:
+    build:
+      context: .
+      dockerfile: docker/php-fpm/Dockerfile
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./:/var/www
+    environment:
+      CONTAINER_ROLE: queue
 
   postgres:
     image: postgres:16-alpine

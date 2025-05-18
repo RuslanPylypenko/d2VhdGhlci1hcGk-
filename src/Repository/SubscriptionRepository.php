@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Email;
 use App\Entity\SubscriptionEntity;
 use App\Entity\Token;
+use App\Enum\Frequency;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -67,13 +68,15 @@ class SubscriptionRepository extends ServiceEntityRepository
     /**
      * @return SubscriptionEntity[]
      */
-    public function getActiveSubscribersForCity(string $city): array
+    public function findActiveSubscribers(string $city, Frequency $frequency): array
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.city = :city')
             ->andWhere('s.confirmed = :confirmed')
             ->andWhere('s.subscribed = :subscribed')
+            ->andWhere('s.frequency = :frequency')
             ->setParameter('city', $city)
+            ->setParameter('frequency', $frequency)
             ->setParameter('confirmed', true)
             ->setParameter('subscribed', true)
             ->getQuery()

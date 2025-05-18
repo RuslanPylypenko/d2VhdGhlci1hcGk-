@@ -20,8 +20,6 @@ class WeatherSender
 {
     public function __construct(
         private LoggerInterface $logger,
-        private WeatherService $weatherService,
-        private SubscriptionRepository $subscriptionRepository,
         private MailerInterface $mailer,
         private RouterInterface $router,
     ) {
@@ -29,37 +27,23 @@ class WeatherSender
 
     public function __invoke(WeatherUpdate $event): void
     {
-        $subscribers = $this->subscriptionRepository->getActiveSubscribersForCity($event->getCity());
+        $unsubscribeUrl = $this->router->generate(
+            'unsubscribe',
+            ['token' => $event->getUnsubscribeToken()->getToken()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
-        $this->logger->debug('Subscribers: ', [
-            'subscribers' => count($subscribers),
-        ]);
+        $mail = (new TemplatedEmail())
+            ->to(new Address($event->getEmail()->getValue()))
+            ->subject('Weather update for ' . $event->getCity())
+            ->htmlTemplate('emails/weather.html.twig')
+            ->context([
+                'unsubscribeUrl' => $unsubscribeUrl,
+                'weather' => $event->getWeather(),
+            ]);
 
-        if (empty($subscribers)) {
-            return;
-        }
+        $this->mailer->send($mail);
 
-        $weather = $this->weatherService->getCurrent($event->getCity());
-
-        foreach ($subscribers as $subscriber) {
-            $unsubscribeUrl = $this->router->generate(
-                'unsubscribe',
-                ['token' => $subscriber->getUnsubscribeToken()->getToken()],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-
-            $mail = (new TemplatedEmail())
-                ->to(new Address($subscriber->getEmail()->getValue()))
-                ->subject('Please confirm your Weather API subscription')
-                ->htmlTemplate('emails/weather.html.twig')
-                ->context([
-                    'unsubscribeUrl' => $unsubscribeUrl,
-                    'weather' => $weather,
-                ]);
-
-            $this->mailer->send($mail);
-
-            $this->logger->debug('Weather sent to '.$subscriber->getEmail()->getValue());
-        };
+        $this->logger->debug('Weather sent to '.$event->getEmail()->getValue());
     }
 }

@@ -1,4 +1,4 @@
-## 🔧 Quick Commands
+## Quick Commands
 
 ```bash
 # Add your API token
@@ -12,3 +12,16 @@ make up
 
 # Stop the application
 make down
+```
+
+## App
+Open app on:
+
+http://localhost:8083
+
+## Mail
+
+You can view mail on:
+
+http://localhost:8082
+

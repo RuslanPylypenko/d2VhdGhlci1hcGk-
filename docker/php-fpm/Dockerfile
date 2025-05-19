@@ -1,8 +1,5 @@
 FROM php:8.3-fpm-alpine
 
-ARG PUID=1000
-ARG PGID=1000
-
 RUN apk add --no-cache --virtual .build-deps \
     $PHPIZE_DEPS \
     libzip-dev \
@@ -19,24 +16,21 @@ RUN apk add --no-cache --virtual .build-deps \
     bash \
     shadow
 
-RUN groupmod -o -g "${PGID}" www-data \
- && usermod -o -u "${PUID}" -g www-data www-data \
- && mkdir -p /var/www \
- && chown www-data:www-data /var/www
+COPY ./docker/php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-COPY --chown=www-data:www-data . /var/www
+COPY . /var/www
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+RUN chown -R www-data:www-data /var/www
 
 COPY ./docker/php-fpm/entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint
 
-# Copy php.ini
-COPY ./docker/php-fpm/php.ini /usr/local/etc/php/conf.d/php.ini
-
 USER www-data
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-interaction --optimize-autoloader
 
 CMD ["/usr/local/bin/entrypoint"]
